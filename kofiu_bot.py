@@ -58,7 +58,6 @@ def main():
     notices = fetch_notices()
     print(f"총 {len(notices)}건 조회됨")
 
-    # 키워드 필터링
     filtered = [
         n for n in notices
         if KEYWORD in n.get("lawordInfoSjNm", "")
@@ -69,7 +68,6 @@ def main():
         print("관련 공고 없음")
         return
 
-    # 가장 최신 공고 (첫 번째)
     latest = filtered[0]
     latest_ordr_no = latest.get("lawordInfoOrdrNo")
     latest_title = latest.get("lawordInfoSjNm", "")
@@ -80,40 +78,39 @@ def main():
     print(f"이전 저장값: {last_ordr_no}")
 
     if last_ordr_no is None:
-        # 최초 실행: 현재 최신값 저장하고 알림 발송
         msg = (
             "\U0001F6A8 <b>[KoFIU] 금융거래등제한대상자 고시 모니터링 시작</b>\n\n"
             f"\U0001F4CB 현재 최신 공고:\n"
             f"  <b>{latest_title}</b>\n"
             f"  \U0001F4C5 등록일: {latest_date}\n"
-            f"  \U0001F517 <a href=\"{view_url}\">공고 바로가기</a>\n\n"
+            f"  \U0001F517 <a href=\"{view_url}\">공고 바로가기</a>\n"
+            f"  {view_url}\n\n"
             "앞으로 새 공고 등록 시 알림을 드립니다."
         )
         send_telegram(msg)
         save_last_seen({"last_ordr_no": latest_ordr_no})
         print("최초 실행 완료 - 현재 최신값 저장")
     elif str(latest_ordr_no) != str(last_ordr_no):
-        # 새 공고 발견
         msg = (
             "\U0001F6A8 <b>[KoFIU] 금융거래등제한대상자 고시 업데이트!</b>\n\n"
             f"\U0001F4CB 신규 공고:\n"
             f"  <b>{latest_title}</b>\n"
             f"  \U0001F4C5 등록일: {latest_date}\n"
-            f"  \U0001F517 <a href=\"{view_url}\">공고 바로가기</a>"
+            f"  \U0001F517 <a href=\"{view_url}\">공고 바로가기</a>\n"
+            f"  {view_url}"
         )
         send_telegram(msg)
         save_last_seen({"last_ordr_no": latest_ordr_no})
         print(f"새 공고 감지 및 알림 발송: {latest_title}")
     else:
-        print("변경사항 없음")
-        # 매일 아침 현황 요약 알림
         msg = (
             "\u2705 <b>[KoFIU] 금융거래등제한대상자 모니터링</b>\n\n"
             "변경사항 없습니다.\n\n"
             f"\U0001F4CB 최근 공고:\n"
             f"  {latest_title}\n"
             f"  \U0001F4C5 {latest_date}\n"
-            f"  \U0001F517 <a href=\"{view_url}\">공고 바로가기</a>"
+            f"  \U0001F517 <a href=\"{view_url}\">공고 바로가기</a>\n"
+            f"  {view_url}"
         )
         send_telegram(msg)
         print("변경 없음 알림 발송 완료")
