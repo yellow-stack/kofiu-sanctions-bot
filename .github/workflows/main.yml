@@ -1,4 +1,4 @@
-name: KoFIU Sanctions Monitor
+name: KoFIU & UN Sanctions Monitor
 
 on:
   schedule:
@@ -21,7 +21,7 @@ jobs:
       - name: Install dependencies
         run: pip install requests
 
-      - name: Restore last seen state
+      - name: Restore KoFIU last seen state
         uses: actions/cache@v4
         with:
           path: last_seen.json
@@ -29,14 +29,34 @@ jobs:
           restore-keys: |
             kofiu-last-seen-
 
-      - name: Run bot
+      - name: Restore UN last seen state
+        uses: actions/cache@v4
+        with:
+          path: un_last_seen.json
+          key: un-last-seen-${{ runner.os }}
+          restore-keys: |
+            un-last-seen-
+
+      - name: Run KoFIU bot
         env:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python kofiu_bot.py
 
-      - name: Save last seen state
+      - name: Run UN sanctions bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python un_sanctions_bot.py
+
+      - name: Save KoFIU last seen state
         uses: actions/cache/save@v4
         with:
           path: last_seen.json
           key: kofiu-last-seen-${{ runner.os }}-${{ github.run_id }}
+
+      - name: Save UN last seen state
+        uses: actions/cache/save@v4
+        with:
+          path: un_last_seen.json
+          key: un-last-seen-${{ runner.os }}-${{ github.run_id }}
