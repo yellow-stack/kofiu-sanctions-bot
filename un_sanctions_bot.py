@@ -129,14 +129,14 @@ def main():
     print(f"이전: {prev_modified} / 개인 {prev_ind} / 단체 {prev_ent} / 합계 {prev_total}")
 
     if not prev_modified:
-        # 최초 실행
         msg = (
             "\U0001F30D <b>[UN] 통합 제재대상자 명단 모니터링 시작</b>\n\n"
             f"\U0001F4C5 UN 명단 최종 업데이트: <b>{last_modified_short}</b>\n"
             f"\U0001F465 개인: <b>{ind_count:,}명</b>\n"
             f"\U0001F3E2 단체: <b>{ent_count:,}개</b>\n"
             f"\U0001F4CA 합계: <b>{total:,}건</b>\n\n"
-            f"\U0001F517 <a href=\"{PAGE_URL}\">명단 바로가기</a>\n\n"
+            f"\U0001F517 <a href=\"{PAGE_URL}\">명단 바로가기</a>\n"
+            f"{PAGE_URL}\n\n"
             "앞으로 변경 시 알림을 드립니다."
         )
         send_telegram(msg)
@@ -144,7 +144,6 @@ def main():
         print("최초 실행 완료")
 
     elif last_modified != prev_modified or total != prev_total:
-        # 변경 감지
         msg = (
             "\U0001F6A8 <b>[UN] 통합 제재대상자 명단 업데이트!</b>\n\n"
             f"\U0001F4C5 UN 명단 최종 업데이트: <b>{last_modified_short}</b>\n"
@@ -152,14 +151,14 @@ def main():
             f"\U0001F465 개인: <b>{ind_count:,}명</b> ({fmt_diff(ind_diff)})\n"
             f"\U0001F3E2 단체: <b>{ent_count:,}개</b> ({fmt_diff(ent_diff)})\n"
             f"\U0001F4CA 합계: <b>{total:,}건</b> (전체 {fmt_diff(total_diff)})\n\n"
-            f"\U0001F517 <a href=\"{PAGE_URL}\">명단 바로가기</a>"
+            f"\U0001F517 <a href=\"{PAGE_URL}\">명단 바로가기</a>\n"
+            f"{PAGE_URL}"
         )
         send_telegram(msg)
         save_last_seen(current)
         print("변경 감지 알림 발송 완료")
 
     else:
-        # 변경 없음 - 날짜 포함 현황 요약
         msg = (
             "\u2705 <b>[UN] 통합 제재대상자 명단 모니터링</b>\n\n"
             "변경사항 없습니다.\n\n"
@@ -167,7 +166,8 @@ def main():
             f"\U0001F465 개인: <b>{ind_count:,}명</b>\n"
             f"\U0001F3E2 단체: <b>{ent_count:,}개</b>\n"
             f"\U0001F4CA 합계: <b>{total:,}건</b>\n\n"
-            f"\U0001F517 <a href=\"{PAGE_URL}\">명단 바로가기</a>"
+            f"\U0001F517 <a href=\"{PAGE_URL}\">명단 바로가기</a>\n"
+            f"{PAGE_URL}"
         )
         send_telegram(msg)
         print("변경 없음 알림 발송 완료")
