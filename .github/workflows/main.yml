@@ -1,4 +1,4 @@
-name: KoFIU & UN Sanctions Monitor
+name: KoFIU & UN & NaverPay Sanctions Monitor
 
 on:
   schedule:
@@ -48,6 +48,12 @@ jobs:
           TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
         run: python un_sanctions_bot.py
+
+      - name: Run NaverPay story bot
+        env:
+          TELEGRAM_BOT_TOKEN: ${{ secrets.TELEGRAM_BOT_TOKEN }}
+          TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
+        run: python naverpay_story_bot.py
 
       - name: Save KoFIU last seen state
         uses: actions/cache/save@v4
